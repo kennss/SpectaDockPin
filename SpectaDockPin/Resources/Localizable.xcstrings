@@ -4,6 +4,9 @@
     "Can't find the Dock" : {
 
     },
+    "Check for Updates…" : {
+
+    },
     "Chosen Display (not connected)" : {
 
     },
@@ -103,10 +106,13 @@
     "Stopped %lld Dock jumps today" : {
 
     },
-    "To stop the Dock from jumping, SpectaDockPin needs the privacy setting that lets it control the pointer. It only ignores pointer moves on the bottom edge of your other displays, and moves the pointer only to bring the Dock back. It never reads the keyboard and sends nothing over the network." : {
+    "To stop the Dock from jumping, SpectaDockPin needs the privacy setting that lets it control the pointer. It only ignores pointer moves on the bottom edge of your other displays, and moves the pointer only to bring the Dock back. It never reads the keyboard, and the only thing it sends over the network is a check for updates." : {
 
     },
     "Turn SpectaDockPin on in System Settings, in the list of apps allowed to control your computer. If it isn't listed, add it with the + button from the Applications folder." : {
+
+    },
+    "Update Available…" : {
 
     },
     "Waiting for permission" : {

@@ -3,10 +3,12 @@
 <!--
   @file        Info.plist
   @description Bundle metadata for SpectaDockPin. LSUIElement: a menu-bar-only app with no Dock icon.
+               SU*: Sparkle updates from the GitHub Releases appcast, verified with the Calida Lab EdDSA key
+               (same public key as SpectArk and SiliconScope).
   @author      Kennt Kim
   @company     Calida Lab
   @created     2026-10-18
-  @lastUpdated 2026-10-18
+  @lastUpdated 2026-10-19
 -->
 <plist version="1.0">
 <dict>
@@ -38,5 +40,11 @@
 	<string>NSApplication</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026 Calida Lab. All rights reserved.</string>
+	<key>SUFeedURL</key>
+	<string>https://github.com/kennss/SpectaDockPin/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>mhjyc+aHQkMYFZInv/15en9GVk/9eBEQN10QLOFwWJU=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
 </dict>
 </plist>

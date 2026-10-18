@@ -5,7 +5,7 @@
 //  @author      Kennt Kim
 //  @company     Calida Lab
 //  @created     2026-10-18
-//  @lastUpdated 2026-10-18
+//  @lastUpdated 2026-10-19
 //
 //  Notes:
 //  - The setting is described, not named: macOS 27 calls the pane "Device Control and Data Access" and
@@ -37,7 +37,7 @@ struct PermissionView: View {
                 }
             }
 
-            Text("To stop the Dock from jumping, SpectaDockPin needs the privacy setting that lets it control the pointer. It only ignores pointer moves on the bottom edge of your other displays, and moves the pointer only to bring the Dock back. It never reads the keyboard and sends nothing over the network.")
+            Text("To stop the Dock from jumping, SpectaDockPin needs the privacy setting that lets it control the pointer. It only ignores pointer moves on the bottom edge of your other displays, and moves the pointer only to bring the Dock back. It never reads the keyboard, and the only thing it sends over the network is a check for updates.")
                 .fixedSize(horizontal: false, vertical: true)
 
             Text("Turn SpectaDockPin on in System Settings, in the list of apps allowed to control your computer. If it isn't listed, add it with the + button from the Applications folder.")

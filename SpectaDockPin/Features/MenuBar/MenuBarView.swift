@@ -1,11 +1,11 @@
 //
 //  @file        MenuBarView.swift
 //  @description The menu-bar menu (DESIGN §6): status, Move Dock Back Now, Pin To, Pause, Launch at Login,
-//               the permission entry when needed, the Option hint, Quit.
+//               the permission entry when needed, the Option hint, updates (Sparkle), Quit.
 //  @author      Kennt Kim
 //  @company     Calida Lab
 //  @created     2026-10-18
-//  @lastUpdated 2026-10-18
+//  @lastUpdated 2026-10-19
 //
 //  Notes:
 //  - MenuBarExtra .menu style: Text rows are disabled menu items, a Picker becomes a submenu with check marks,
@@ -19,6 +19,7 @@ import SwiftUI
 
 struct MenuBarView: View {
     @Environment(AppModel.self) private var model
+    @Environment(UpdaterController.self) private var updater
 
     var body: some View {
         Text(model.status.headline)
@@ -58,6 +59,13 @@ struct MenuBarView: View {
         Divider()
 
         Text("Hold Option to let the Dock move")
+
+        if updater.updateAvailable {
+            Button("Update Available…") { updater.checkForUpdates() }
+        } else {
+            Button("Check for Updates…") { updater.checkForUpdates() }
+                .disabled(!updater.canCheck)
+        }
 
         Button("Quit SpectaDockPin") {
             model.shutdown()

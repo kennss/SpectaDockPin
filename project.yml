@@ -5,10 +5,11 @@
 # @author      Kennt Kim
 # @company     Calida Lab
 # @created     2026-10-18
-# @lastUpdated 2026-10-18
+# @lastUpdated 2026-10-19
 #
 # Notes:
-# - Not released (Docs/DESIGN.md §9, §13 decision 2): no sandbox, no Sparkle, no network.
+# - Not sandboxed (Docs/DESIGN.md §9, §13 decision 2). Sparkle updates from GitHub Releases are the only
+#   network use (§13 decision 9).
 # - Hardened runtime is on because notarization requires it; no runtime exceptions are needed.
 # - Local builds are signed with the Apple Development identity (Automatic) so the Accessibility grant
 #   survives rebuilds (DESIGN §3 S7); scripts/release.sh exports the Developer ID build.
@@ -31,6 +32,11 @@ settings:
     DEVELOPMENT_TEAM: "8677QL77VJ"
     ENABLE_HARDENED_RUNTIME: YES
 
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.9.3"
+
 targets:
   SpectaDockPin:
     type: application
@@ -38,6 +44,8 @@ targets:
     deploymentTarget: "14.0"
     sources:
       - path: SpectaDockPin
+    dependencies:
+      - package: Sparkle
     scheme:
       testTargets:
         - SpectaDockPinTests
@@ -50,6 +58,9 @@ targets:
         CODE_SIGN_ENTITLEMENTS: SpectaDockPin/App/SpectaDockPin.entitlements
         ENABLE_HARDENED_RUNTIME: YES
         ENABLE_APP_SANDBOX: NO
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/../Frameworks"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         SWIFT_EMIT_LOC_STRINGS: YES

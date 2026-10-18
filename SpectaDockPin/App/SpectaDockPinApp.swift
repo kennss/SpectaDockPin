@@ -4,11 +4,11 @@
 //  @author      Kennt Kim
 //  @company     Calida Lab
 //  @created     2026-10-18
-//  @lastUpdated 2026-10-18
+//  @lastUpdated 2026-10-19
 //
 //  Notes:
-//  - AppModel is owned by AppDelegate (not @State here) so its start() and shutdown() run exactly at launch
-//    and quit; the scene only reads it.
+//  - AppModel and UpdaterController are owned by AppDelegate (not @State here) so start() and shutdown() run
+//    exactly at launch and quit; the scene only reads them.
 //
 
 import SwiftUI
@@ -21,6 +21,7 @@ struct SpectaDockPinApp: App {
         MenuBarExtra {
             MenuBarView()
                 .environment(appDelegate.model)
+                .environment(appDelegate.updater)
         } label: {
             MenuBarLabel(model: appDelegate.model)
         }

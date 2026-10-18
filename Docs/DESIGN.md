@@ -140,7 +140,7 @@ Dock은 아래쪽에 있고, 자동 숨김은 꺼져 있다. 핫 코너는 오�
 - **I5 탭 콜백은 메인 스레드와 무관하다.** 전용 스레드의 런루프에서 돌고, 미리 계산한 사각형 몇 개와 비교만 한다. 메인 스레드가 멈춰도 시스템이 탭을 시간 초과로 끄지 않게 하기 위해서다.
 - **I6 조건이 안 맞으면 쉬고 이유를 보여 준다.** 화면이 하나뿐일 때, Dock이 아래쪽이 아닐 때, Spaces가 화면을 가로지를 때, 권한이 없을 때가 해당한다.
 - **I7 테스트 호스트는 아무것도 하지 않는다.** 단위 테스트 실행 중에는 탭을 만들지 않고 커서도 움직이지 않는다(SpectArk `AppRuntime.isUnitTestHost` 선례).
-- **I8 네트워크와 텔레메트리가 없다.** 로그에는 좌표와 상태만 남긴다. 업데이트 장치도 없다(§9).
+- **I8 텔레메트리가 없다.** 네트워크는 Sparkle 업데이트 확인(GitHub Releases의 appcast) 하나뿐이다(§9, §13 결정 9). 로그에는 좌표와 상태만 남긴다.
 
 ---
 
@@ -363,7 +363,8 @@ macOS가 바뀌면 다시 돌려 §3 표가 아직 맞는지 확인한다. `trig
 - 로컬 빌드도 **Apple Development 인증서로 서명한다**(Automatic, 팀 8677QL77VJ). 임시 서명은 빌드할 때마다 서명 정보가 바뀌어 권한이 풀린다. 같은 인증서로 다시 빌드하면 권한이 유지된다(S7). 시험할 때는 `/Applications`에 설치한다(S7).
 - 설치용 빌드는 `scripts/release.sh`로 만든다. Release로 아카이브하고, Developer ID로 내보내 서명을 확인한 뒤, 공증하고 스테이플한다. 그다음 DMG를 만들어 다시 서명, 공증, 스테이플한다. SpectArk 파이프라인에서 Sparkle 부분만 뺀 것이다. 공증 프로필은 `WhisPlayInfo-notary`를 쓴다.
 - Developer ID 서명과 Apple Development 서명은 서로 다른 서명으로 보이므로, 설치용 빌드로 바꿀 때 손쉬운 사용 권한을 한 번 다시 줘야 한다. 권한을 바꾸기 전에는 앱을 종료한다(§12).
-- 업데이트 장치(Sparkle)와 네트워크는 없다(I8). 새 빌드는 직접 설치한다.
+- **업데이트는 Sparkle**이다(§13 결정 9, 2026-10-19). 저장소 `kennss/SpectaDockPin`(공개)의 GitHub Releases에 DMG와 `appcast.xml`을 올리고, 앱은 `releases/latest/download/appcast.xml`을 확인한다. 업데이트는 Calida Lab EdDSA 키로 검증한다. SpectArk, SiliconScope와 같은 키이고, 개인 키는 로그인 키체인에 있다. `release.sh`가 공증된 DMG로 appcast를 만든다. 릴리즈마다 `CURRENT_PROJECT_VERSION`을 올린다(Sparkle은 `CFBundleVersion`으로 비교한다).
+- 메뉴바 전용 앱이라, 자동 확인으로 업데이트를 찾았을 때 앱이 앞에 있지 않으면 창을 띄우지 않는다. 대신 메뉴에 "Update Available…"를 보인다(Sparkle의 gentle reminders). 사용자가 누른 확인은 앱을 앞으로 가져와 Sparkle 창을 보인다.
 
 ---
 
@@ -377,7 +378,7 @@ macOS가 바뀌면 다시 돌려 §3 표가 아직 맞는지 확인한다. `trig
 | P3 | DockLocator + DockPreferences + 쉬는 조건 | 메뉴 상태가 실제 Dock 위치와 항상 같음 |
 | P4 | Relocator + RelocationPolicy + SessionMonitor | T4, T7 통과. 잠긴 상태에서는 커서가 절대 움직이지 않음 |
 | P5 | 메뉴 UI 완성, 고정 화면 선택, 로그인 항목, String Catalog | 모든 UI 문자열이 카탈로그에 있음 |
-| P6 | 아이콘(`tools/AppIcon`, 2026-10-18 완료: 파란 모니터의 Dock 막대를 앰버 핀이 고정하는 모양, Specta 유리 바탕), `scripts/release.sh`(Developer ID 서명, 공증, DMG) | 공증된 DMG를 설치해 손쉬운 사용 권한을 주고 쓸 수 있음 |
+| P6 | Sparkle(2026-10-19), 아이콘(`tools/AppIcon`, 2026-10-18 완료: 파란 모니터의 Dock 막대를 앰버 핀이 고정하는 모양, Specta 유리 바탕), `scripts/release.sh`(Developer ID 서명, 공증, DMG) | 공증된 DMG를 설치해 손쉬운 사용 권한을 주고 쓸 수 있음 |
 
 ---
 
@@ -411,12 +412,13 @@ macOS가 바뀌면 다시 돌려 §3 표가 아직 맞는지 확인한다. `trig
 ## 13. 결정 (2026-10-18, Kennt)
 
 1. **이름과 번들 ID**: 앱 이름은 **SpectaDockPin**(SiliconDockPin에서 변경). 번들 ID는 `ai.calidalab.spectadockpin`이다. 2026-06 이후 새 앱의 형식(소문자)을 따른다. 
-2. **배포**: ~~앱 스토어 출시~~ → **출시 예정 없음.** 샌드박스 없음, Developer ID 서명 + 공증(§9). "그까잇거 여차하면 출시 안 하면 되지", "샌드박스 의식하지 말고"(같은 날 변경). Sparkle 없음.
+2. **배포**: ~~앱 스토어 출시~~ → **출시 예정 없음.** 샌드박스 없음, Developer ID 서명 + 공증(§9). "그까잇거 여차하면 출시 안 하면 되지", "샌드박스 의식하지 말고"(같은 날 변경). 소스는 공개 저장소 `kennss/SpectaDockPin`(2026-10-19).
 3. **Option 키 일시 해제**: 넣는다. 마우스 이벤트의 수정 키 플래그만 보고, Option으로 옮긴 위치는 존중한다(§5.2).
 4. **고정 화면 선택**: 메뉴에서 고를 수 있게 하고, 기본값은 주 화면이다(§6).
 5. **번역 언어**: 출시할 때의 계획은 Specta 기본 5개 언어(ko, ja, zh-Hans, zh-Hant, id) + 원본 en이었다. 출시 예정이 없어서 지금은 en만 쓰고, 문자열은 모두 String Catalog에 둔다(§7).
 6. **강조색**: Specta 앰버(§7 브랜드).
 7. **막는 방식**: 손쉬운 사용 권한으로 이벤트를 버리는 지금 설계 그대로 간다. 권한 없이 커서를 밀어 올리는 방식은 하지 않는다(§11).
 8. **모서리**: 막는다(F23). 막아도 핫 코너는 작동했다(R3). 예외는 두지 않는다.
+9. **업데이트**: Sparkle을 넣는다(2026-10-19, "spark 넣자"). GitHub Releases appcast, Specta 공용 EdDSA 키(§9).
 
 폴더 이름: `~/Desktop/Developments/SiliconDockPin` → `SpectaDockPin`으로 바꿨다(2026-10-18). 폴더 이름과 제품 이름이 다른 Specta 앱이 이미 셋이나 있어서, 이번에는 처음부터 맞췄다.
