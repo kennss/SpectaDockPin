@@ -1,0 +1,135 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Can't find the Dock" : {
+
+    },
+    "Chosen Display (not connected)" : {
+
+    },
+    "Display %u" : {
+
+    },
+    "Dock didn't move back after %lld tries" : {
+
+    },
+    "Dock didn't move back — trying again (attempt %lld)" : {
+
+    },
+    "Dock is on %@ — moving it back" : {
+
+    },
+    "Dock moved with Option" : {
+
+    },
+    "Dock moved with Option to %@" : {
+
+    },
+    "Dock pinned to %@" : {
+
+    },
+    "Done" : {
+
+    },
+    "Grant Permission…" : {
+
+    },
+    "Hold Option to let the Dock move" : {
+
+    },
+    "Keeps the Dock on one display." : {
+
+    },
+    "Last move back failed %@" : {
+
+    },
+    "Last moved back %@" : {
+
+    },
+    "Launch at Login" : {
+
+    },
+    "Main Display" : {
+
+    },
+    "Move Dock Back Now" : {
+
+    },
+    "Moving the Dock back…" : {
+
+    },
+    "Needs permission to guard the Dock" : {
+
+    },
+    "Open System Settings" : {
+
+    },
+    "Pause" : {
+
+    },
+    "Paused" : {
+
+    },
+    "Paused — Dock is on the left" : {
+
+    },
+    "Paused — Dock is on the right" : {
+
+    },
+    "Paused — only one display" : {
+
+    },
+    "Paused — “Displays have separate Spaces” is off" : {
+
+    },
+    "Permission granted — the Dock is guarded." : {
+
+    },
+    "Pin To" : {
+
+    },
+    "Quit SpectaDockPin" : {
+
+    },
+    "Quit SpectaDockPin before you turn this permission off." : {
+
+    },
+    "SpectaDockPin" : {
+
+    },
+    "Starting…" : {
+
+    },
+    "Stopped %lld Dock jumps today" : {
+
+    },
+    "To stop the Dock from jumping, SpectaDockPin needs the privacy setting that lets it control the pointer. It only ignores pointer moves on the bottom edge of your other displays, and moves the pointer only to bring the Dock back. It never reads the keyboard and sends nothing over the network." : {
+
+    },
+    "Turn SpectaDockPin on in System Settings, in the list of apps allowed to control your computer. If it isn't listed, add it with the + button from the Applications folder." : {
+
+    },
+    "Waiting for permission" : {
+
+    },
+    "Waiting for permission…" : {
+
+    },
+    "Waiting for the pointer to rest" : {
+
+    },
+    "Waiting — a mouse button is down" : {
+
+    },
+    "Waiting — another user is active" : {
+
+    },
+    "Waiting — the Mac is asleep" : {
+
+    },
+    "Waiting — the screen is locked" : {
+
+    }
+  },
+  "version" : "1.0"
+}

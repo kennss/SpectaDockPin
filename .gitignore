@@ -1,0 +1,24 @@
+# @file        .gitignore
+# @description Files git must not track for SpectaDockPin (same set as SpectArk's).
+# @author      Kennt Kim
+# @company     Calida Lab
+# @created     2026-10-18
+# @lastUpdated 2026-10-18
+
+# macOS
+.DS_Store
+
+# Xcode / build artifacts
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# XcodeGen output (regenerate with `xcodegen generate`)
+SpectaDockPin.xcodeproj/

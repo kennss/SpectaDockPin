@@ -1,0 +1,71 @@
+# @file        project.yml
+# @description XcodeGen spec for SpectaDockPin — a non-sandboxed, Developer ID-signed menu-bar app that keeps
+#              the Dock on one display. Generates SpectaDockPin.xcodeproj (git-ignored). Run
+#              `xcodegen generate` after editing.
+# @author      Kennt Kim
+# @company     Calida Lab
+# @created     2026-10-18
+# @lastUpdated 2026-10-18
+#
+# Notes:
+# - Not released (Docs/DESIGN.md §9, §13 decision 2): no sandbox, no Sparkle, no network.
+# - Hardened runtime is on because notarization requires it; no runtime exceptions are needed.
+# - Local builds are signed with the Apple Development identity (Automatic) so the Accessibility grant
+#   survives rebuilds (DESIGN §3 S7); scripts/release.sh exports the Developer ID build.
+
+name: SpectaDockPin
+options:
+  bundleIdPrefix: ai.calidalab
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: "8677QL77VJ"
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+  SpectaDockPin:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: SpectaDockPin
+    scheme:
+      testTargets:
+        - SpectaDockPinTests
+    settings:
+      base:
+        PRODUCT_NAME: SpectaDockPin
+        PRODUCT_BUNDLE_IDENTIFIER: ai.calidalab.spectadockpin
+        INFOPLIST_FILE: SpectaDockPin/App/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_ENTITLEMENTS: SpectaDockPin/App/SpectaDockPin.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_APP_SANDBOX: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+
+  SpectaDockPinTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: SpectaDockPinTests
+    dependencies:
+      - target: SpectaDockPin
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.calidalab.spectadockpin.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SpectaDockPin.app/Contents/MacOS/SpectaDockPin"
+        BUNDLE_LOADER: "$(TEST_HOST)"
