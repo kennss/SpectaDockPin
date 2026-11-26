@@ -292,7 +292,7 @@ Dock은 아래쪽에 있고, 자동 숨김은 꺼져 있다. 핫 코너는 오�
 | 항목 | 규칙 | 근거 |
 |---|---|---|
 | 빌드 | **XcodeGen `project.yml`**이 기준이다. `.xcodeproj`는 생성물이라 git에서 제외한다 | SpectArk, SpectaKool, SpectaDiary `project.yml`. principles.md |
-| 설정 | `SWIFT_VERSION 6.0`, `SWIFT_STRICT_CONCURRENCY complete`(경고를 끄고 넘어가지 않는다), `ENABLE_HARDENED_RUNTIME YES`(공증에 필요), `ENABLE_APP_SANDBOX NO`, `DEVELOPMENT_TEAM 8677QL77VJ`, `MARKETING_VERSION 0.1.0` / `CURRENT_PROJECT_VERSION 1` | SpectArk `project.yml`와 같다 |
+| 설정 | `SWIFT_VERSION 6.0`, `SWIFT_STRICT_CONCURRENCY complete`(경고를 끄고 넘어가지 않는다), `ENABLE_HARDENED_RUNTIME YES`(공증에 필요), `ENABLE_APP_SANDBOX NO`, `DEVELOPMENT_TEAM 8677QL77VJ`, `MARKETING_VERSION 0.1.1` / `CURRENT_PROJECT_VERSION 2`(릴리스마다 올린다. Sparkle은 `CFBundleVersion`을 비교한다) | SpectArk `project.yml`와 같다 |
 | entitlements | `com.apple.security.app-sandbox = false` 하나뿐이다. hardened runtime 예외(JIT, 라이브러리 검증 끄기 등)는 필요 없다 | SpectArk `SpectaBackup.entitlements` |
 | 번들 ID | `ai.calidalab.spectadockpin`(2026-06 이후 새 앱은 `ai.calidalab.*`, 소문자) | SpectArk, SpectaBooks, SpectaDiary |
 | 배포 대상 | macOS 14.0. `@Observable`, `MenuBarExtra`, `SMAppService`가 모두 된다 | SpectArk |

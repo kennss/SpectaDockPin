@@ -79,7 +79,7 @@ All the measurements are written down in [`Docs/DESIGN.md`](Docs/DESIGN.md) (Kor
   Updates…**.
 - The status line says why it is resting when it is: only one display, the Dock on the left or right,
   "Displays have separate Spaces" off, or the permission missing.
-- **Copy Diagnostics** (versions after 0.1.0): copies a short report for a bug report. See below.
+- **Copy Diagnostics** (0.1.1 and later): copies a short report for a bug report. See below.
 
 ## Requirements and limits
 
