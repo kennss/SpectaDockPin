@@ -6,7 +6,7 @@
   @author      Kennt Kim
   @company     Calida Lab
   @created     2026-10-18
-  @lastUpdated 2026-10-18
+  @lastUpdated 2026-11-26
 -->
 
 # SpectaDockPin — 설계서 v1
@@ -108,7 +108,7 @@ Dock은 아래쪽에 있고, 자동 숨김은 꺼져 있다. 핫 코너는 오�
 | R4 | Option을 누른 채 Dell 아래 밀기, 이어서 메뉴의 Move Dock Back Now | Option 이벤트 60개가 통과해 Dock이 Dell로 갔고, 앱은 되돌리지 않았다. 메뉴로 0.41초 만에 돌아왔다 |
 | R5 (T4) | Dock이 Dell에 있는 채 화면 잠금 → 해제 | 해제 뒤 LG로 돌아왔다(Kennt 확인) |
 
-**샌드박스 실측** (같은 날, `com.apple.security.app-sandbox`만 켠 테스트 앱 `SandboxProbe`, Apple Development 서명, `/Applications`에 설치). 앱 스토어 계획을 접어서 지금은 기록용이다. 샌드박스가 없으면 S4의 Dock 설정 읽기가 되고, 나머지(S1–S3, S5–S8)는 그대로 적용된다:
+**샌드박스 실측** (S1–S8은 같은 날, S9–S12는 2026-11-26. `com.apple.security.app-sandbox`만 켠 테스트 앱 `SandboxProbe`, Apple Development 서명, `/Applications`에 설치). 앱 스토어 계획을 접어서 지금은 기록용이다. 샌드박스가 없으면 S4의 Dock 설정 읽기가 되고, 나머지(S1–S3, S5–S8)는 그대로 적용된다:
 
 | # | 실험 | 결과 | 설계에 주는 뜻 |
 |---|---|---|---|
@@ -120,8 +120,12 @@ Dock은 아래쪽에 있고, 자동 숨김은 꺼져 있다. 핫 코너는 오�
 | S6 | `NSScreen.visibleFrame` | Dock이 있는 LG만 아래쪽이 49pt 들어가 있다. 메뉴 막대 높이는 화면과 시점마다 다르다(Dell 0 또는 30pt) | Dock 방향은 Dock이 있는 화면의 **아래, 왼쪽, 오른쪽 여백**으로만 판단한다. 위쪽 여백은 쓰지 않는다 |
 | S7 | 권한 요청(`CGRequestPostEventAccess`) 뒤 시스템 설정 목록 | `/private/tmp`에 있는 앱은 TCC에 기록돼도 목록에 보이지 않는다. `/Applications`에 두고 +로 추가하자 보였다. 같은 인증서로 다시 빌드해도 권한이 유지됐다 | 개발 빌드도 `/Applications`(또는 보이는 위치)에 설치해서 시험한다. 서명은 계속 같은 인증서로 한다 |
 | S8 | `x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility` 열기 | macOS 27에서 "Device Control and Data Access" 화면이 열린다 | 온보딩은 이 URL로 해당 화면을 바로 연다. 화면 이름을 문구에 박아 넣지 않는다 |
+| S9 | 샌드박스 앱에서 AX 호출(Dock `AXChildren`, Finder·SystemUIServer·ControlCenter `AXRole`, system-wide `AXFocusedApplication`, `AXUIElementCopyElementAtPosition`). 2026-11-26, macOS 27 | `AXIsProcessTrusted`는 true인데 모든 호출이 `-25204`(`kAXErrorCannotComplete`)로 실패했다. 0.5초씩 런루프를 돌리며 4번 다시 해도 같았다. 샌드박스 거부 로그는 없었다. 대조군(같은 바이너리, 같은 번들 ID, 같은 인증서, 샌드박스만 끔)에서는 모두 성공했다 | **샌드박스에서는 AX를 쓸 수 없다.** Dock 방향을 AX로 읽는 방법은 앱 스토어 빌드에서 쓸 수 없다 |
+| S10 | 샌드박스 밖에서 Dock AX(`AXList` 자식). 아래·왼쪽·오른쪽 × 자동 숨김 끔·켬, 6가지 | `AXOrientation`: 아래 = `AXHorizontalOrientation`, 왼쪽·오른쪽 = `AXVerticalOrientation`. 자동 숨김을 켜도 같다. `AXFrame`: 아래 (787,1639 1434×43), 숨김이면 y=1692(화면 밖). 왼쪽 (-1718,44 35×1062), 숨김이면 x=-1763. 오른쪽 (5516,48 42×1375), 숨김이면 x=5568. 왼쪽·오른쪽 Dock은 가장 왼쪽·오른쪽 화면(맥북, Dell)으로 간다 | 샌드박스 밖이라면 설정 파일 없이도 방향을 정확히 알 수 있다(왼쪽·오른쪽은 `AXFrame`과 Dock 화면 중심을 비교). S9 때문에 앱 스토어 빌드에서는 못 쓴다 |
+| S11 | 같은 6가지에서 Dock 소유 창 전체(`CGWindowListCopyWindowInfo`, `.optionAll`)와 `NSScreen` 여백 | Dock 창은 언제나 레이어 20 창 하나이고, 범위는 Dock이 있는 화면 전체다(F8). 자동 숨김이면 `onscreen`만 false가 된다. 여백: 자동 숨김을 끄면 Dock 화면에서 아래 49, 왼쪽 41, 오른쪽 48pt. 켜면 모든 화면이 0이다 | CG 창으로는 방향을 알 수 없다. 여백은 자동 숨김을 끈 경우에만 방향을 알려 준다. 자동 숨김 + 옆 Dock은 샌드박스에서 여백만으로는 알 수 없다 |
+| S12 | 샌드박스 + `com.apple.security.temporary-exception.shared-preference.read-only = [com.apple.dock]` | `orientation`(bottom/left/right), `autohide`, `wvous-br-corner`(14) 모두 읽혔다. 설정을 바꾼 뒤 다시 실행하면 새 값이 나왔다 | 이 예외가 있으면 지금 `DockPreferences`를 그대로 쓸 수 있다. 다만 임시 예외는 심사에서 따로 승인받아야 한다 |
 
-앱 스토어 선례: 같은 일을 하는 DockLock Lite가 샌드박스 앱으로 앱 스토어에 있다(1.2.5부터 1.5.2까지 25번 넘게 업데이트, 마지막 2026-10-06). Kennt가 쓰는 Magnet도 앱 스토어 앱이면서 이 권한을 쓴다.
+앱 스토어 선례: 같은 일을 하는 DockLock Lite가 샌드박스 앱으로 앱 스토어에 있다(1.2.5부터 1.5.2까지 25번 넘게 업데이트, 마지막 2026-10-06). Magnet은 앱 스토어 앱(`_MASReceipt` 있음)이지만 샌드박스 entitlement가 없다(2026-11-26 `codesign -d --entitlements` 확인). 샌드박스 의무화 이전 앱이어서 새 앱의 선례가 되지 못한다.
 
 검색으로 확인한 것:
 - **권한을 끄면 입력이 먹통이 될 수 있다.** `.defaultTap`이 켜진 상태에서 손쉬운 사용 권한을 끄면 키보드와 마우스 입력이 전부 멈추고, 재부팅해야 한다는 보고가 있다(Apple Developer Forums 844416, FB24619068). Sequoia, Tahoe, macOS 27에서 재현되고 해결되지 않았다. → I4, §5.7
