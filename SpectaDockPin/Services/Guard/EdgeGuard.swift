@@ -6,7 +6,7 @@
 //  @author      Kennt Kim
 //  @company     Calida Lab
 //  @created     2026-10-18
-//  @lastUpdated 2026-10-18
+//  @lastUpdated 2026-11-26
 //
 //  Notes:
 //  - Tap: .cgSessionEventTap + .headInsertEventTap + .defaultTap (F4); needs the Accessibility permission.
@@ -148,6 +148,16 @@ final class EdgeGuard: Sendable {
 
     var status: GuardStatus {
         state.withLock { $0.status }
+    }
+
+    /// The snapshot the tap is deciding with right now (for diagnostics).
+    var snapshot: GuardSnapshot {
+        state.withLock { $0.snapshot }
+    }
+
+    /// Whether the tap exists and is switched on right now (for diagnostics).
+    var isTapEnabled: Bool {
+        handles.withLockUnchecked { handles in handles.port.map { CGEvent.tapIsEnabled(tap: $0) } ?? false }
     }
 
     /// Safety net on top of the callback's own re-enable (§5.2). True when the tap had to be switched back on.

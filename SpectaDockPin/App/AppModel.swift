@@ -6,7 +6,7 @@
 //  @author      Kennt Kim
 //  @company     Calida Lab
 //  @created     2026-10-18
-//  @lastUpdated 2026-10-18
+//  @lastUpdated 2026-11-26
 //
 //  Notes:
 //  - Owned by AppDelegate, so start() and shutdown() are tied to launch and quit. A unit-test host never
@@ -19,6 +19,8 @@
 //    3-second poll alone never restarts attempts, so a Dock that will not move does not get the cursor
 //    hijacked forever.
 //  - "Today" counts are measured from the guard's running totals and reset at local midnight.
+//  - diagnostics() reads everything fresh (the Dock window too) but changes nothing, so copying a report never
+//    starts a relocation.
 //
 
 import AppKit
@@ -197,6 +199,69 @@ final class AppModel {
     var isDockOnAnchor: Bool {
         guard let anchor = displayMap.anchor else { return false }
         return dockPlacement == .display(anchor.id)
+    }
+
+    // MARK: - Diagnostics
+
+    /// Everything "Copy Diagnostics" reports. Read-only: no state changes, no relocation.
+    func diagnostics() async -> DiagnosticsReport {
+        let window = started ? await locator.current() : nil
+        let guardStatus = edgeGuard.status
+        let snapshot = edgeGuard.snapshot
+        let insets = DiagnosticsProbe.screenInsets()
+        let anchorID = displayMap.anchor?.id
+        let anchorSetting: String
+        if settings.anchorDisplayUUID == nil {
+            anchorSetting = "main display"
+        } else if displayMap.anchorIsFallback {
+            anchorSetting = "a display that is not connected (main display stands in)"
+        } else {
+            anchorSetting = "display [\(anchorID.map(String.init) ?? "?")]"
+        }
+        let now = ProcessInfo.processInfo.systemUptime
+        let inputs = relocationInputs()
+        return DiagnosticsReport(
+            generated: Date(),
+            appVersion: DiagnosticsProbe.appVersion,
+            osVersion: DiagnosticsProbe.osVersion,
+            machine: DiagnosticsProbe.machine,
+            status: String(describing: status),
+            pauseReason: pauseReason.map { String(describing: $0) } ?? "none",
+            accessibilityTrusted: AXIsProcessTrusted(),
+            tapRunning: edgeGuard.isRunning,
+            tapEnabled: edgeGuard.isTapEnabled,
+            anchorSetting: anchorSetting,
+            paused: settings.paused,
+            launchAtLogin: loginItem.isEnabled,
+            dock: dockSettings,
+            dockWindow: window?.bounds,
+            placement: String(describing: window.map { DockLocator.placement(of: $0.bounds, in: displayMap.displays) }
+                              ?? .unknown),
+            userOverride: userOverride,
+            displays: displayMap.displays.map { display in
+                DiagnosticsReport.Display(id: display.id, name: display.name, bounds: display.bounds,
+                                          isMain: display.isMain, isBuiltin: CGDisplayIsBuiltin(display.id) != 0,
+                                          isAnchor: display.id == anchorID,
+                                          mirrors: CGDisplayMirrorsDisplay(display.id), insets: insets[display.id])
+            },
+            displayMapIsCurrent: DisplayWatcher.activeDisplays() == displayMap.displays,
+            guardActive: snapshot.isActive,
+            guardedRows: snapshot.strips,
+            relocationPoint: displayMap.relocationPoint,
+            droppedEvents: guardStatus.droppedEvents,
+            blockedVisits: guardStatus.blockedVisits,
+            tapDisabledByTimeout: guardStatus.disabledByTimeout,
+            tapDisabledByUserInput: guardStatus.disabledByUserInput,
+            lastOptionPassAgo: guardStatus.lastOptionPass.map { now - $0.time },
+            phase: String(describing: phase),
+            failedAttempts: failedAttempts,
+            lastRelocation: lastRelocation?.date,
+            lastRelocationSucceeded: lastRelocation?.succeeded ?? false,
+            asleep: inputs.asleep,
+            screenLocked: inputs.screenLocked,
+            onConsole: inputs.onConsole,
+            secondsSinceInput: inputs.secondsSinceInput
+        )
     }
 
     // MARK: - Events

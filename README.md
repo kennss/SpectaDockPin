@@ -4,7 +4,7 @@
   @author      Kennt Kim
   @company     Calida Lab
   @created     2026-10-19
-  @lastUpdated 2026-10-19
+  @lastUpdated 2026-11-26
 -->
 
 # SpectaDockPin
@@ -79,6 +79,7 @@ All the measurements are written down in [`Docs/DESIGN.md`](Docs/DESIGN.md) (Kor
   Updates…**.
 - The status line says why it is resting when it is: only one display, the Dock on the left or right,
   "Displays have separate Spaces" off, or the permission missing.
+- **Copy Diagnostics** (versions after 0.1.0): copies a short report for a bug report. See below.
 
 ## Requirements and limits
 
@@ -87,6 +88,14 @@ All the measurements are written down in [`Docs/DESIGN.md`](Docs/DESIGN.md) (Kor
   Dock on the main display by itself).
 - It relies on how the Dock behaves today, which Apple does not document. `tools/DockProbe` re-runs the
   measurements after a macOS update. If SpectaDockPin can't find the Dock, it pauses instead of guessing.
+
+## Reporting a problem
+
+If the Dock still moves, or SpectaDockPin says something you don't expect, choose **Copy Diagnostics** in
+its menu while the problem is happening, then paste the text into a
+[GitHub issue](https://github.com/kennss/SpectaDockPin/issues) along with what you saw. The report lists your
+displays (names and layout), the Dock's settings and SpectaDockPin's state. It has nothing else in it, and
+it goes nowhere until you paste it.
 
 ## Build from source
 

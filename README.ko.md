@@ -4,7 +4,7 @@
   @author      Kennt Kim
   @company     Calida Lab
   @created     2026-10-19
-  @lastUpdated 2026-10-19
+  @lastUpdated 2026-11-26
 -->
 
 # SpectaDockPin
@@ -74,6 +74,7 @@ Dock을 지키기 시작합니다.
   Updates…**.
 - 쉬고 있을 때는 상태 줄에 이유가 나옵니다. 화면이 하나뿐일 때, Dock이 왼쪽이나 오른쪽에 있을 때,
   "디스플레이마다 별도의 Spaces"가 꺼져 있을 때, 권한이 없을 때입니다.
+- **Copy Diagnostics**(0.1.0 다음 버전부터): 문제를 알릴 때 붙일 짧은 보고서를 복사합니다. 아래를 보세요.
 
 ## 요구 사항과 한계
 
@@ -82,6 +83,13 @@ Dock을 지키기 시작합니다.
   알아서 Dock을 주 화면에 둡니다).
 - Apple이 문서로 밝히지 않은 지금의 Dock 동작에 기댑니다. macOS를 업데이트한 뒤에는 `tools/DockProbe`로
   측정을 다시 돌릴 수 있습니다. Dock을 찾지 못하면 짐작하지 않고 쉽니다.
+
+## 문제 알리기
+
+Dock이 여전히 넘어가거나 SpectaDockPin이 예상과 다른 말을 하면, 문제가 일어나고 있을 때 메뉴에서
+**Copy Diagnostics**를 누르세요. 그런 다음 겪은 일과 함께 그 글을
+[GitHub 이슈](https://github.com/kennss/SpectaDockPin/issues)에 붙여 넣어 주세요. 보고서에는 화면 목록(이름과
+배치), Dock 설정, SpectaDockPin의 상태만 들어 있습니다. 붙여 넣기 전에는 어디로도 보내지지 않습니다.
 
 ## 소스에서 빌드
 

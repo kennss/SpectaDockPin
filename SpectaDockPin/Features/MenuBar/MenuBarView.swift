@@ -1,11 +1,11 @@
 //
 //  @file        MenuBarView.swift
 //  @description The menu-bar menu (DESIGN §6): status, Move Dock Back Now, Pin To, Pause, Launch at Login,
-//               the permission entry when needed, the Option hint, updates (Sparkle), Quit.
+//               the permission entry when needed, the Option hint, updates (Sparkle), Copy Diagnostics, Quit.
 //  @author      Kennt Kim
 //  @company     Calida Lab
 //  @created     2026-10-18
-//  @lastUpdated 2026-10-19
+//  @lastUpdated 2026-11-26
 //
 //  Notes:
 //  - MenuBarExtra .menu style: Text rows are disabled menu items, a Picker becomes a submenu with check marks,
@@ -13,8 +13,11 @@
 //  - Pin To stores the display's UUID; "Main Display" stores nil and follows whichever display is main. A
 //    chosen display that is not connected is listed as such and the main display stands in (DESIGN §6).
 //  - Quit removes the tap before the app ends (§12).
+//  - Copy Diagnostics puts DiagnosticsReport text on the clipboard and says so in an alert: the menu closes on
+//    click, so without the alert a user cannot tell anything happened.
 //
 
+import AppKit
 import SwiftUI
 
 struct MenuBarView: View {
@@ -67,11 +70,28 @@ struct MenuBarView: View {
                 .disabled(!updater.canCheck)
         }
 
+        Button("Copy Diagnostics") {
+            Task { await copyDiagnostics() }
+        }
+
         Button("Quit SpectaDockPin") {
             model.shutdown()
             NSApp.terminate(nil)
         }
         .keyboardShortcut("q")
+    }
+
+    private func copyDiagnostics() async {
+        let text = DiagnosticsReport.render(await model.diagnostics())
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+
+        let alert = NSAlert()
+        alert.messageText = String(localized: "Diagnostics copied")
+        alert.informativeText = String(localized: "Paste them (⌘V) into your bug report or message. They list your displays and their layout, the Dock's settings and SpectaDockPin's state — nothing else.")
+        alert.addButton(withTitle: String(localized: "OK"))
+        NSApp.activate()
+        alert.runModal()
     }
 
     private var anchorBinding: Binding<String?> {

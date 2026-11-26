@@ -4,7 +4,7 @@
   @author      Kennt Kim
   @company     Calida Lab
   @created     2026-10-19
-  @lastUpdated 2026-10-19
+  @lastUpdated 2026-11-26
 -->
 
 # SpectaDockPin
@@ -77,6 +77,7 @@ Dock がそちらへ移ってしまいます。**SpectaDockPin は Dock を選�
   Updates…**。
 - 休んでいるときは、状態行にその理由が出ます。ディスプレイが 1 台だけのとき、Dock が左か右にあるとき、
   「ディスプレイごとに個別の操作スペース」がオフのとき、権限がないときです。
+- **Copy Diagnostics**(0.1.0 の次のバージョンから):不具合を知らせるときに添える短いレポートをコピーします。下を見てください。
 
 ## 動作環境と制限
 
@@ -85,6 +86,13 @@ Dock がそちらへ移ってしまいます。**SpectaDockPin は Dock を選�
   Dock をメインディスプレイに置きます)。
 - Apple が文書化していない現在の Dock の挙動に頼っています。macOS をアップデートしたあとは `tools/DockProbe` で
   測定をやり直せます。Dock が見つからないときは、推測せずに休みます。
+
+## 不具合を知らせる
+
+Dock がまだ移ってしまう、または SpectaDockPin の表示が思ったものと違うときは、その状態のままメニューの
+**Copy Diagnostics** を選んでください。そのあと、起きたことと一緒にそのテキストを
+[GitHub の Issue](https://github.com/kennss/SpectaDockPin/issues) に貼り付けてください。レポートに入るのは
+ディスプレイの一覧(名前と配置)、Dock の設定、SpectaDockPin の状態だけです。貼り付けるまで、どこにも送られません。
 
 ## ソースからビルド
 

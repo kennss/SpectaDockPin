@@ -10,6 +10,12 @@
     "Chosen Display (not connected)" : {
 
     },
+    "Copy Diagnostics" : {
+
+    },
+    "Diagnostics copied" : {
+
+    },
     "Display %u" : {
 
     },
@@ -64,7 +70,13 @@
     "Needs permission to guard the Dock" : {
 
     },
+    "OK" : {
+
+    },
     "Open System Settings" : {
+
+    },
+    "Paste them (⌘V) into your bug report or message. They list your displays and their layout, the Dock's settings and SpectaDockPin's state — nothing else." : {
 
     },
     "Pause" : {

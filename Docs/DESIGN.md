@@ -282,6 +282,7 @@ Dock은 아래쪽에 있고, 자동 숨김은 꺼져 있다. 핫 코너는 오�
   - Move Dock back now. 수동 트리거이며, I3 조건은 그대로 적용한다.
   - Launch at login. `SMAppService.mainApp`을 쓰고 기본값은 꺼짐이다. 사용자가 고를 때만 켠다(SpectArk 규칙).
   - Grant Accessibility…(필요할 때만), Quit
+  - Copy Diagnostics(2026-11-26 추가). 일반 사용자에게 테스트를 맡길 수 없어서 만들었다(계기: "모니터 3대인데 적용이 안 된다" 댓글, §8 R6). 누르면 화면 목록(ID, 이름, CG 범위, 주 화면·내장·고정 화면·미러 여부, NSScreen 여백), 탭이 지금 쓰는 막는 줄(`GuardSnapshot`), 되돌릴 점, Dock 설정과 Dock 창 범위·판정, 권한과 탭 상태, 막은 이벤트 수와 탭이 꺼진 횟수, 되돌리기 단계, 세션 상태, 앱·macOS 버전과 기종을 영어 텍스트로 클립보드에 넣고, 복사됐다고 알림 창을 띄운다(메뉴가 닫혀서 알림이 없으면 아무 일도 없는 것처럼 보인다). 화면 UUID는 하드웨어 식별자라 넣지 않는다(I8). 이 텍스트의 화면 범위를 그대로 `DisplayMapTests`에 옮기면 사용자 배치를 재현할 수 있다. 리포트 값 모으기는 `AppModel.diagnostics()`(읽기만 함), 글로 바꾸기는 `DiagnosticsReport.render`(순수 함수)가 맡는다
 - UI 문자열은 영어 원본으로 쓰고 String Catalog에 넣는다. 번역은 출시를 다시 정할 때 한다(§13 결정 5).
 
 ---
@@ -323,8 +324,9 @@ SpectaDockPin/
                 Dock/      DockLocator, DockPreferences
                 Relocation/Relocator, RelocationPolicy (pure)
                 System/    SessionMonitor, PermissionWatch
+                Diagnostics/Diagnostics (DiagnosticsReport + render (pure), DiagnosticsProbe)
     Resources/  Assets.xcassets (AppIcon, AccentColor), Localizable.xcstrings, InfoPlist.xcstrings
-  SpectaDockPinTests/   DisplayMapTests, EdgeRuleTests, RelocationPolicyTests, DockPlacementTests
+  SpectaDockPinTests/   DisplayMapTests, EdgeRuleTests, RelocationPolicyTests, DockPlacementTests, DiagnosticsTests
   tools/DockProbe/       the §3 experiment CLI, kept for regression checks
   tools/AppIcon/make_icon.swift  앱 아이콘 원본(CoreGraphics). `xcrun swift tools/AppIcon/make_icon.swift`로 AppIcon.appiconset을 다시 만든다
   scripts/release.sh     Developer ID 서명, 공증, DMG
@@ -343,6 +345,7 @@ SpectaDockPin/
 - `EdgeRuleTests`: 줄 경계값 `maxY−1`, `maxY−1−ε`, 모서리 픽셀, 앱이 보낸 표식 이벤트, Option 플래그가 있는 이벤트
 - `RelocationPolicyTests`: 잠금, 콘솔 아님, 버튼 눌림, 입력 직후, 일시정지일 때 각각 `.wait`가 나오는지
 - `DockPlacementTests`: 창 범위가 화면과 같을 때, 겹칠 때, 없을 때의 판정
+- `DiagnosticsTests`: 보고서의 모든 줄, 값이 없을 때의 표기(`none`, `not found`, STALE), 소수 좌표 표기, 화면 UUID가 들어가지 않는지
 
 `tools/DockProbe`(§3 실험을 정리한 SwiftPM CLI, `xcrun swift build`로 빌드). 앱 코드와 일부러 분리했다. 앱의 DisplayMap이나 DockLocator에 버그가 있어도 macOS 동작 변화를 가리지 않게 하기 위해서다.
 - 읽기만 함: `info`(화면, Dock 창, 막을 줄, 되돌릴 점, 권한, 세션), `where`(Dock 위치)
